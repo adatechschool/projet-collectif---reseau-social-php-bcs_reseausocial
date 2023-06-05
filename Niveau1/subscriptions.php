@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="style.css"/>
     </head>
     <body>
-        <?php include 'header.php' ?>
+        <?php include 'header.php'; ?>
 
         <div id="wrapper">
             <aside>
@@ -27,10 +27,10 @@
                 // Etape 1: récupérer l'id de l'utilisateur
                 $userId = intval($_GET['user_id']);
                 // Etape 2: se connecter à la base de donnée
-                include 'mysqli.php'
+                include 'mysqli.php';
                 // Etape 3: récupérer le nom de l'utilisateur
                 $laQuestionEnSql = "
-                    SELECT users.* 
+                    SELECT users.*
                     FROM followers 
                     LEFT JOIN users ON users.id=followers.followed_user_id 
                     WHERE followers.following_user_id='$userId'
@@ -39,13 +39,28 @@
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 // Etape 4: à vous de jouer
                 //@todo: faire la boucle while de parcours des abonnés et mettre les bonnes valeurs ci dessous 
-                ?>
+
+                if ( ! $lesInformations)
+                
+                {
+                    echo("Échec de la requete : " . $mysqli->error);
+                    exit();
+                }
+                while ($post = $lesInformations->fetch_assoc())
+                {
+                echo "<pre>" . print_r($post, 1) . "</pre>";
+                ?> 
+            
+                
                 <article>
                     <img src="user.jpg" alt="blason"/>
-                    <h3>Alexandra</h3>
-                    <p>id:654</p>                    
-                </article>
+                    <h3><?php echo $post ['alias']?></h3>
+                    <p><?php echo $post ['id']?></p>                    
+                    </article>
+                    <?php }
+                ?>
             </main>
+
         </div>
     </body>
 </html>
